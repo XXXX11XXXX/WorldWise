@@ -58,7 +58,7 @@ function Form() {
           type="back" 
           onClick={(e) => {
             e.preventDefault();
-            navigate(-2);
+            navigate(-1);
           }}
         >
           &larr; Back
