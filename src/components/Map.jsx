@@ -1,33 +1,48 @@
+import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { MapContainer, TileLayer, Marker, Popup, useMap, useMapEvents } from "react-leaflet";
 import styles from "./Map.module.css";
-import { useSearchParams, useNavigate } from "react-router-dom";
-import { MapContainer, TileLayer, Marker, Popup, useMap, useMapEvents } from 'react-leaflet';
-import { useState, useEffect } from "react";
 import { useCities } from "../context/CitiesContext";
 import { useGeolocation } from "../hooks/useGeolocation";
 import Button from "./Button";
-export default function Map() {
+import { useUrlPosition } from "../hooks/useUrlPosition";
+
+function Map() {
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
-  const [mapPosition, setMapPosition] = useState([41.890210, 12.492373]);
-  const {isLoading: isLoadingGeolocation, position: geolocationPosition, error: geolocationError, getPosition: getGeolocationPosition} = useGeolocation();
-  // 将字符串转换为数字
-  const lat = parseFloat(searchParams.get("lat")) || mapPosition[0];
-  const lng = parseFloat(searchParams.get("lng")) || mapPosition[1];
-  const {cities} = useCities();
+  // 设置默认位置
+  const [mapPosition, setMapPosition] = useState([40, 0]);
+  const { cities } = useCities();
+  
+  // 获取 URL 参数中的经纬度
+  const [lat, lng] = useUrlPosition();
+  
+  const {
+    isLoading: isLoadingPosition,
+    position: geolocationPosition,
+    getPosition,
+  } = useGeolocation();
+
+  // 当获取到地理位置时更新地图位置
   useEffect(() => {
-    if(geolocationPosition) {
+    if (geolocationPosition)
       setMapPosition([geolocationPosition.lat, geolocationPosition.lng]);
-    }
   }, [geolocationPosition]);
-useEffect(() => {
-  if(lat && lng) setMapPosition([lat, lng]);
-}, [lat, lng]);
+
+  // 当 URL 参数中有经纬度时更新地图位置
+  useEffect(() => {
+    if (lat && lng) setMapPosition([lat, lng]);
+  }, [lat, lng]);
+
   return (
     <div className={styles.mapContainer}>
-      <Button type="position" onClick={getGeolocationPosition}>{isLoadingGeolocation ? "Loading..." : "Use your position"}</Button>
-      <MapContainer 
-        center={[lat, lng]} 
-        zoom={13} 
+      {!geolocationPosition && (
+        <Button type="position" onClick={getPosition}>
+          {isLoadingPosition ? "Loading..." : "Use your position"}
+        </Button>
+      )}
+      <MapContainer
+        center={mapPosition}
+        zoom={6}
         scrollWheelZoom={true}
         className={styles.map}
       >
@@ -35,28 +50,41 @@ useEffect(() => {
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png"
         />
-        {lat && lng && (
-          cities.map(city => (
-            <Marker key={city.id} position={[city.position.lat, city.position.lng]}>
-              <Popup>{city.cityName}</Popup>
-            </Marker>
-          ))
-        )}
-        <ChangeCenter position={[lat, lng]} />
-        <DetectClick />
+        
+        {cities.map((city) => (
+          <Marker
+            key={city.id}
+            position={[city.position.lat, city.position.lng]}
+          >
+            <Popup>
+              <span>{city.emoji}</span>
+              <span>{city.cityName}</span>
+            </Popup>
+          </Marker>
+        ))}
+
+        <ChangeCenter position={mapPosition} />
+        <MapEvents />
       </MapContainer>
     </div>
   );
 }
-function ChangeCenter({position}){
+
+// 用于更新地图中心的组件
+function ChangeCenter({ position }) {
   const map = useMap();
-  map.setView(position, 13);
+  map.setView(position);
   return null;
 }
-  function DetectClick(){
+
+function MapEvents() {
   const navigate = useNavigate();
-  useMapEvents({
-    click: e => navigate(`form?lat=${e.latlng.lat}&lng=${e.latlng.lng}`),
-  })
+  const map = useMapEvents({
+    click: (e) => {
+      navigate(`form?lat=${e.latlng.lat}&lng=${e.latlng.lng}`);
+    },
+  });
   return null;
 }
+
+export default Map;
