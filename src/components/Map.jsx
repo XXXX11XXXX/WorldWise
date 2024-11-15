@@ -35,11 +35,9 @@ function Map() {
 
   return (
     <div className={styles.mapContainer}>
-      {!geolocationPosition && (
-        <Button type="position" onClick={getPosition}>
-          {isLoadingPosition ? "Loading..." : "Use your position"}
-        </Button>
-      )}
+      <Button type="position" onClick={getPosition}>
+        {isLoadingPosition ? "Loading..." : "Use your position"}
+      </Button>
       <MapContainer
         center={mapPosition}
         zoom={6}
@@ -80,8 +78,16 @@ function ChangeCenter({ position }) {
 function MapEvents() {
   const navigate = useNavigate();
   const map = useMapEvents({
-    click: (e) => {
-      navigate(`form?lat=${e.latlng.lat}&lng=${e.latlng.lng}`);
+    click: async (e) => {
+      const baseUrl = "https://api.bigdatacloud.net/data/reverse-geocode-client";
+      const res = await fetch(`${baseUrl}?latitude=${e.latlng.lat}&longitude=${e.latlng.lng}`);
+      const data = await res.json();
+      console.log(data);
+      if (data.city === "" || data.countryName === "") {
+        alert("This is not a city yet, sorry.");
+      } else {
+        navigate(`form?lat=${e.latlng.lat}&lng=${e.latlng.lng}`);
+      }
     },
   });
   return null;
