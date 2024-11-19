@@ -82,7 +82,6 @@ function MapEvents() {
       const baseUrl = "https://api.bigdatacloud.net/data/reverse-geocode-client";
       const res = await fetch(`${baseUrl}?latitude=${e.latlng.lat}&longitude=${e.latlng.lng}`);
       const data = await res.json();
-      console.log(data);
       if (data.city === "" || data.countryName === "") {
         alert("This is not a city yet, sorry.");
       } else {
