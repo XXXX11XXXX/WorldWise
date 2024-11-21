@@ -1,18 +1,6 @@
 {
   "cities": [
     {
-      "cityName": "Lisbon",
-      "country": "Portugal",
-      "emoji": "🇵🇹",
-      "date": "2027-10-31T15:59:59.138Z",
-      "notes": "My favorite city so far!",
-      "position": {
-        "lat": 38.727881642324164,
-        "lng": -9.140900099907554
-      },
-      "id": "73930385"
-    },
-    {
       "cityName": "Madrid",
       "country": "Spain",
       "emoji": "🇪🇸",
@@ -73,16 +61,40 @@
       "emoji": "🇸🇵"
     },
     {
-      "id": "47bc",
-      "cityName": "Mortroux",
-      "country": "France",
-      "date": "2024-11-19T14:24:29.191Z",
+      "id": "3af3",
+      "cityName": "Villamanrique",
+      "country": "Spain",
+      "date": "2024-11-21T02:40:29.788Z",
+      "notes": "TSET",
+      "position": {
+        "lat": 38.548165423046584,
+        "lng": -2.9913313717188954
+      },
+      "emoji": "🇸🇵"
+    },
+    {
+      "id": "4fd3",
+      "cityName": "Longhua",
+      "country": "China",
+      "date": "2024-11-21T02:42:27.780Z",
       "notes": "",
       "position": {
-        "lat": 46.37725420510028,
-        "lng": 1.911683341132009
+        "lat": 29.289861384796808,
+        "lng": 107.30978457134863
       },
-      "emoji": "🇫🇷"
+      "emoji": "🇨🇭"
+    },
+    {
+      "id": "b06d",
+      "cityName": "Guang’an",
+      "country": "China",
+      "date": "2024-11-21T02:45:24.529Z",
+      "notes": "",
+      "position": {
+        "lat": 30.127176308499745,
+        "lng": 106.94091796875001
+      },
+      "emoji": "🇨🇭"
     }
   ]
 }
